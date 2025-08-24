@@ -349,66 +349,20 @@ const MapView = () => {
   };
 
   useEffect(() => {
-    // Enhanced coordinate fetching with error handling
-    const fetchCoordinates = async (city, area) => {
-      try {
-        const query = encodeURIComponent(`${area}, ${city}, India`);
-        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}&countrycodes=IN&limit=1`;
-        const res = await fetch(url);
-        const data = await res.json();
-        if (data && data.length > 0) {
-          return [parseFloat(data[0].lat), parseFloat(data[0].lon)];
-        }
-        
-        // Fallback: try just city name
-        const cityQuery = encodeURIComponent(`${city}, India`);
-        const cityUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${cityQuery}&countrycodes=IN&limit=1`;
-        const cityRes = await fetch(cityUrl);
-        const cityData = await cityRes.json();
-        if (cityData && cityData.length > 0) {
-          return [parseFloat(cityData[0].lat), parseFloat(cityData[0].lon)];
-        }
-      } catch (error) {
-        console.error(`Error fetching coordinates for ${city}:`, error);
-      }
-      return null;
-    };
-
-    const fetchCityData = async () => {
-      setLoading(true);
-      try {
-        // Enhanced static data with more cities and varied risk levels - Devprayag added
-        const backendData = [
-          { city: "Chennai", area: "Marina Beach", risk: "High" },
-          { city: "Kolkata", area: "Howrah", risk: "Medium" },
-          { city: "Mumbai", area: "Colaba", risk: "Critical" },
-          { city: "Navi Mumbai", area: "Vashi", risk: "Low" },
-          { city: "Delhi", area: "Connaught Place", risk: "High" },
-          { city: "Bangalore", area: "MG Road", risk: "Moderate" },
-          { city: "Hyderabad", area: "Charminar", risk: "Medium" },
-          { city: "Pune", area: "Shivaji Nagar", risk: "Low" },
-          { city: "Devprayag", area: "Sangam", risk: "High" },
-        ];
-
-        const citiesWithCoords = await Promise.all(
-          backendData.map(async (item) => {
-            const coords = await fetchCoordinates(item.city, item.area);
-            return coords ? { ...item, coords } : null;
-          })
-        );
-
-        // Filter out cities where coordinates couldn't be fetched
-        const validCities = citiesWithCoords.filter(city => city !== null);
-        setCities(validCities);
-        console.log('Cities loaded:', validCities);
-      } catch (error) {
-        console.error('Error fetching city data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchCityData();
+    // Use static coordinates for instant loading
+    const staticCities = [
+      { city: "Chennai", area: "Marina Beach", risk: "High", coords: [13.0500, 80.2824] },
+      { city: "Kolkata", area: "Howrah", risk: "Medium", coords: [22.5958, 88.2636] },
+      { city: "Mumbai", area: "Colaba", risk: "Critical", coords: [18.9067, 72.8147] },
+      { city: "Navi Mumbai", area: "Vashi", risk: "Low", coords: [19.0707, 73.0000] },
+      { city: "Delhi", area: "Connaught Place", risk: "High", coords: [28.6315, 77.2167] },
+      { city: "Bangalore", area: "MG Road", risk: "Moderate", coords: [12.9758, 77.6055] },
+      { city: "Hyderabad", area: "Charminar", risk: "Medium", coords: [17.3616, 78.4747] },
+      { city: "Pune", area: "Shivaji Nagar", risk: "Low", coords: [18.5308, 73.8478] },
+      { city: "Devprayag", area: "Sangam", risk: "High", coords: [30.1461, 78.5986] },
+    ];
+    setCities(staticCities);
+    setLoading(false);
   }, []);
 
   const handleLayerToggle = (layerType) => {

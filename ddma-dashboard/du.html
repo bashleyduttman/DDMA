@@ -1,0 +1,16 @@
+html = """<!doctype html>
+<html><head><meta charset="utf-8"><title>Incident Card</title></head>
+<body>
+  <h2>SAFE_INFORMATIONAL — Devprayag Confluence (Sangam)</h2>
+  <p><b>People:</b> 1 | <b>Severity:</b> 3 | <b>Priority:</b> MEDIUM</p>
+  <p><b>Notes:</b> Sender reports being safe at the Devprayag confluence.</p>
+  <hr>
+  <p><b>Task:</b> Confirm safety of 1 person at Devprayag Confluence (Sangam)</p>
+  <p><b>Comms (EN):</b> Confirm the person is safe, assess for injuries, maintain contact...</p>
+  <p><b>Comms (HI):</b> व्यक्ति की सुरक्षा की पुष्टि करें...</p>
+</body></html>"""
+
+with open("incident_card.html", "w", encoding="utf-8") as f:
+    f.write(html)
+
+print("Saved incident_card.html")
