@@ -42,7 +42,6 @@
   box-shadow: 2px 0 10px rgba(0, 0, 0, 0.08);
   position: relative;
   flex-shrink: 0;
-  height: 100vh;
 }
 
 .city-sidebar::before {
@@ -373,7 +372,7 @@
   padding: 20px;
   margin-bottom: 24px;
   border: 1px solid #fbbf24;
-  box-shadow: 0 4px 6px rgba(251, 191, 36, 0.1);
+  box-shadow: 0 4px 6px rgba(251,191,36,0.1);
 }
 
 .affected-areas-summary h3 {
@@ -583,7 +582,6 @@
   background: #f8fafc;
   min-height: 0;
   min-width: 0;
-  height: 100vh;
 }
 
 /* Custom Zoom Controls */
@@ -632,86 +630,67 @@
 
 /* Enhanced Responsive Design - Mobile First Approach */
 
-/* Large Mobile Portrait and Tablets */
-@media (max-width: 1024px) {
-  .city-page {
-    flex-direction: row; /* Keep horizontal layout for tablets */
-  }
-  
-  .city-sidebar {
-    width: 300px;
-    min-width: 300px;
-    max-width: 350px;
-    padding: 20px;
-    height: 100vh;
-  }
-  
-  .city-map {
-    flex: 1;
-    height: 100vh;
-  }
-  
-  .resource-breakdown {
-    grid-template-columns: 1fr;
-  }
-  
-  .teams-status {
-    flex-direction: column;
-    gap: 10px;
-  }
-  
-  .teams-list {
-    max-height: 250px;
-  }
-}
-
-/* Medium Mobile Landscape and Small Tablets */
+/* Mobile Portrait - Enhanced */
 @media (max-width: 768px) {
   .city-page {
-    flex-direction: row; /* Maintain horizontal layout */
+    flex-direction: column;
+    height: 100vh;
   }
   
   .city-sidebar {
-    width: 280px;
-    min-width: 280px;
-    max-width: 320px;
+    width: 100%;
+    min-width: unset;
+    max-width: unset;
+    height: 50vh;
+    max-height: 50vh;
+    border-right: none;
+    border-bottom: 2px solid #e2e8f0;
     padding: 16px;
-    height: 100vh;
+    overflow-y: auto;
+    flex-shrink: 0;
   }
   
   .city-map {
-    flex: 1;
-    height: 100vh;
+    height: 50vh;
+    min-height: 50vh;
+    flex: none;
   }
   
+  /* Compact sidebar content for mobile */
   .city-sidebar h2 {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
     margin-bottom: 6px;
   }
   
   .city-description {
     font-size: 0.8rem;
     margin-bottom: 16px;
+    line-height: 1.3;
   }
   
   .emergency-overview,
   .rescue-teams-overview,
   .affected-areas-summary {
-    padding: 16px;
-    margin-bottom: 18px;
+    padding: 14px;
+    margin-bottom: 16px;
+    border-radius: 8px;
   }
   
   .emergency-overview h3,
-  .affected-areas-summary h3,
-  .rescue-teams-overview h3 {
+  .affected-areas-summary h3 {
     font-size: 1rem;
     margin-bottom: 12px;
+  }
+  
+  .rescue-teams-overview h3 {
+    font-size: 1rem;
+    margin-bottom: 10px;
   }
   
   .facility-count,
   .teams-count .count,
   .areas-count .count {
-    font-size: 1.6rem;
+    font-size: 1.8rem;
   }
   
   .facility-label,
@@ -720,25 +699,108 @@
     font-size: 0.75rem;
   }
   
+  .resource-breakdown {
+    gap: 8px;
+  }
+  
+  .resource-category {
+    padding: 10px 12px;
+    gap: 10px;
+    min-height: 44px;
+  }
+  
+  .resource-icon {
+    font-size: 1.1rem;
+    width: 24px;
+  }
+  
+  .resource-name {
+    font-size: 0.8rem;
+  }
+  
+  .resource-count {
+    font-size: 0.9rem;
+    min-width: 32px;
+    padding: 3px 8px;
+  }
+  
+  /* Team status layout for mobile */
+  .teams-status {
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 15px;
+  }
+  
+  .status-item {
+    justify-content: center;
+    min-height: 32px;
+    font-size: 0.8rem;
+  }
+  
+  /* Compact team list for mobile */
   .teams-list {
-    max-height: 200px;
+    max-height: 180px;
   }
   
   .team-card {
     padding: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .team-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
   }
   
   .team-header h4 {
     font-size: 0.85rem;
+    line-height: 1.2;
+  }
+  
+  .team-status {
+    align-self: flex-end;
+    margin-top: -22px;
+    font-size: 0.7rem;
   }
   
   .team-details {
     font-size: 0.75rem;
+    line-height: 1.3;
   }
   
+  .team-details p {
+    margin: 2px 0;
+  }
+  
+  /* Compact severity legend */
   .severity-legend {
     padding: 12px;
+  }
+  
+  .severity-legend h4 {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
+  }
+  
+  .severity-item {
+    padding: 4px 0;
+    min-height: 28px;
+  }
+  
+  .severity-color {
+    width: 12px;
+    height: 12px;
+  }
+  
+  .severity-name {
+    font-size: 0.8rem;
+  }
+  
+  /* Compact disaster types */
+  .disaster-types h4 {
+    font-size: 0.85rem;
+    margin-bottom: 8px;
   }
   
   .disaster-type-tag {
@@ -746,116 +808,36 @@
     padding: 3px 6px;
   }
   
+  /* Compact data sources */
+  .data-sources {
+    padding: 12px;
+  }
+  
+  .data-sources h4 {
+    font-size: 0.8rem;
+  }
+  
+  .data-sources li {
+    font-size: 0.7rem;
+  }
+  
+  /* Custom zoom controls for mobile */
+  .custom-zoom {
+    top: 15px;
+    right: 15px;
+  }
+  
   .custom-zoom button {
-    width: 36px;
-    height: 36px;
+    width: 44px;
+    height: 44px;
     font-size: 1.1rem;
   }
 }
 
-/* Mobile Portrait - Only for very small screens */
-@media (max-width: 600px) {
-  .city-page {
-    flex-direction: column; /* Switch to vertical layout only for very small screens */
-    height: 100vh;
-  }
-  
-  .city-sidebar {
-    width: 100%;
-    min-width: unset;
-    max-width: unset;
-    height: 50vh; /* Take half the screen */
-    max-height: 50vh;
-    border-right: none;
-    border-bottom: 2px solid #e2e8f0;
-    padding: 12px;
-    flex-shrink: 0;
-    overflow-y: auto;
-  }
-  
-  .city-map {
-    flex: 1;
-    height: 50vh; /* Take the other half */
-    min-height: 50vh;
-  }
-  
-  .city-sidebar h2 {
-    font-size: 1.2rem;
-    margin-bottom: 4px;
-  }
-  
-  .city-description {
-    font-size: 0.75rem;
-    margin-bottom: 12px;
-  }
-  
-  .emergency-overview,
-  .rescue-teams-overview,
-  .affected-areas-summary {
-    padding: 12px;
-    margin-bottom: 12px;
-    border-radius: 8px;
-  }
-  
-  .emergency-overview h3,
-  .affected-areas-summary h3,
-  .rescue-teams-overview h3 {
-    font-size: 0.9rem;
-    margin-bottom: 10px;
-  }
-  
-  .facility-count,
-  .teams-count .count,
-  .areas-count .count {
-    font-size: 1.4rem;
-  }
-  
-  .teams-list {
-    max-height: 120px;
-  }
-  
-  .team-card {
-    padding: 8px;
-    margin-bottom: 8px;
-  }
-  
-  .team-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 4px;
-  }
-  
-  .team-status {
-    align-self: flex-end;
-    margin-top: -20px;
-    font-size: 0.65rem;
-  }
-  
-  .team-details {
-    font-size: 0.7rem;
-  }
-  
-  .disaster-type-tag {
-    font-size: 0.6rem;
-    padding: 2px 5px;
-  }
-  
-  .custom-zoom {
-    top: 10px;
-    right: 10px;
-  }
-  
-  .custom-zoom button {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
-  }
-}
-
-/* Very Small Mobile Portrait */
+/* Small Mobile Portrait */
 @media (max-width: 480px) {
   .city-sidebar {
-    padding: 10px;
+    padding: 12px;
     height: 45vh;
     max-height: 45vh;
   }
@@ -866,22 +848,83 @@
   }
   
   .city-sidebar h2 {
-    font-size: 1.1rem;
+    font-size: 1.25rem;
   }
   
-  .teams-list {
-    max-height: 100px;
+  .city-description {
+    font-size: 0.75rem;
+    margin-bottom: 12px;
   }
   
   .emergency-overview,
   .rescue-teams-overview,
   .affected-areas-summary {
-    padding: 10px;
-    margin-bottom: 10px;
+    padding: 12px;
+    margin-bottom: 12px;
+  }
+  
+  .facility-count,
+  .teams-count .count,
+  .areas-count .count {
+    font-size: 1.6rem;
+  }
+  
+  .teams-list {
+    max-height: 120px;
+  }
+  
+  .team-card {
+    padding: 8px;
+  }
+  
+  .team-details {
+    font-size: 0.7rem;
+  }
+  
+  .disaster-type-tag {
+    font-size: 0.6rem;
+    padding: 2px 5px;
   }
 }
 
-/* Desktop and Large Screens */
+/* Tablet Portrait */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .city-page {
+    flex-direction: row;
+  }
+  
+  .city-sidebar {
+    width: 320px;
+    min-width: 320px;
+    max-width: 360px;
+    height: 100vh;
+    padding: 20px;
+    border-right: 2px solid #e2e8f0;
+    border-bottom: none;
+  }
+  
+  .city-map {
+    flex: 1;
+    height: 100vh;
+  }
+  
+  .resource-breakdown {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 10px;
+  }
+  
+  .teams-status {
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 12px;
+  }
+  
+  .teams-list {
+    max-height: 250px;
+  }
+}
+
+/* Desktop Landscape */
 @media (min-width: 1025px) {
   .city-page {
     flex-direction: row;
@@ -923,37 +966,35 @@
   }
 }
 
-/* Special handling for landscape orientation on mobile devices */
-@media (max-height: 500px) and (orientation: landscape) {
+/* Landscape orientation for mobile */
+@media (max-width: 768px) and (orientation: landscape) {
   .city-page {
-    flex-direction: row !important; /* Force horizontal layout in landscape */
+    flex-direction: row;
   }
   
   .city-sidebar {
-    width: 300px !important;
-    min-width: 300px !important;
-    height: 100vh !important;
-    max-height: none !important;
-    border-right: 2px solid #e2e8f0 !important;
-    border-bottom: none !important;
-    padding: 12px !important;
+    width: 45vw;
+    min-width: 320px;
+    height: 100vh;
+    max-height: none;
+    border-right: 2px solid #e2e8f0;
+    border-bottom: none;
+    padding: 16px;
   }
   
   .city-map {
-    flex: 1 !important;
-    height: 100vh !important;
-    min-height: 100vh !important;
+    width: 55vw;
+    height: 100vh;
   }
   
   .teams-list {
-    max-height: 150px !important;
+    max-height: 40vh;
   }
   
   .emergency-overview,
   .rescue-teams-overview,
   .affected-areas-summary {
-    margin-bottom: 10px !important;
-    padding: 10px !important;
+    margin-bottom: 14px;
   }
 }
 
@@ -1222,4 +1263,209 @@
       flex-direction: column;
     }
   }
+}
+
+/* Dark mode for city-sidebar */
+.city-sidebar {
+  background: linear-gradient(180deg, #181c24 0%, #232a36 100%);
+  border-right: 2px solid #232a36;
+  color: #e5e7eb;
+  box-shadow: 2px 0 10px rgba(0,0,0,0.25);
+}
+
+.city-sidebar::before {
+  background: linear-gradient(90deg, #3b82f6, #8b5cf6, #ec4899);
+  opacity: 0.7;
+}
+
+.city-sidebar h2 {
+  color: #f3f4f6;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.city-description {
+  color: #a3a3a3;
+}
+
+.emergency-overview {
+  background: linear-gradient(135deg, #232a36 0%, #1e293b 100%);
+  border: 2px solid #334155;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.emergency-overview h3 {
+  color: #60a5fa;
+}
+
+.total-facilities {
+  background: rgba(30, 41, 59, 0.7);
+  border: 1px solid #334155;
+}
+
+.facility-count {
+  color: #60a5fa;
+  text-shadow: 0 2px 4px rgba(30, 64, 175, 0.3);
+}
+
+.facility-label {
+  color: #a3a3a3;
+}
+
+.resource-breakdown {
+  background: none;
+}
+
+.resource-category {
+  background: rgba(36, 41, 54, 0.8);
+  border: 1px solid #232a36;
+  color: #e5e7eb;
+}
+
+.resource-category:hover {
+  background: rgba(55, 65, 81, 0.95);
+}
+
+.resource-name {
+  color: #e5e7eb;
+}
+
+.resource-count {
+  color: #60a5fa;
+  background: linear-gradient(135deg, #1e293b, #232a36);
+  border: 1px solid #334155;
+}
+
+.rescue-teams-overview {
+  background: linear-gradient(135deg, #232a36 0%, #181c24 100%);
+  border: 2px solid #334155;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.5);
+}
+
+.rescue-teams-overview h3 {
+  color: #f87171;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.7);
+}
+
+.teams-count {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.2);
+}
+
+.teams-count .count {
+  color: #f87171;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.teams-count .label {
+  color: #a3a3a3;
+}
+
+.teams-status {
+  color: #e5e7eb;
+}
+
+.status-item {
+  color: #e5e7eb;
+}
+
+.teams-list {
+  background: none;
+}
+
+.team-card {
+  background: rgba(36, 41, 54, 0.15);
+  border: 1px solid rgba(255,255,255,0.05);
+}
+
+.team-card:hover {
+  background: rgba(55, 65, 81, 0.18);
+  border-color: #f87171;
+}
+
+.team-header h4 {
+  color: #f3f4f6;
+}
+
+.team-details {
+  color: #a3a3a3;
+}
+
+.team-details strong {
+  color: #f3f4f6;
+}
+
+.team-status.available {
+  background-color: rgba(34,197,94,0.15);
+  color: #34d399;
+  border: 1px solid rgba(34,197,94,0.3);
+}
+
+.team-status.on-mission {
+  background-color: rgba(251,191,36,0.15);
+  color: #fbbf24;
+  border: 1px solid rgba(251,191,36,0.3);
+}
+
+.affected-areas-summary {
+  background: linear-gradient(135deg, #232a36 0%, #181c24 100%);
+  border: 1px solid #fbbf24;
+  box-shadow: 0 4px 6px rgba(251,191,36,0.08);
+}
+
+.affected-areas-summary h3 {
+  color: #fde68a;
+}
+
+.areas-count {
+  background: rgba(251,191,36,0.08);
+  border: 1px solid #fbbf24;
+}
+
+.areas-count .count {
+  color: #fde68a;
+}
+
+.areas-count .label {
+  color: #a3a3a3;
+}
+
+.severity-legend {
+  background: rgba(36, 41, 54, 0.8);
+  border: 1px solid #232a36;
+}
+
+.severity-legend h4 {
+  color: #f3f4f6;
+}
+
+.severity-name {
+  color: #e5e7eb;
+}
+
+.disaster-types h4 {
+  color: #f3f4f6;
+}
+
+.disaster-type-tag {
+  background: linear-gradient(45deg, #f87171, #fbbf24);
+  color: #181c24;
+  text-shadow: none;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+}
+
+.data-sources {
+  background: linear-gradient(135deg, #232a36 0%, #181c24 100%);
+  border: 1px solid #334155;
+}
+
+.data-sources h4 {
+  color: #f3f4f6;
+}
+
+.data-sources li {
+  color: #a3a3a3;
+}
+
+.data-sources li::before {
+  color: #64748b;
 }

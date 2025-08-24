@@ -67,7 +67,7 @@ const CustomZoom = () => {
 };
 
 // Enhanced Zoom Handler with smooth transitions
-const ZoomHandler = ({ cities }) => {
+const ZoomHandler = ({ cities, activeLayer }) => {
   const navigate = useNavigate();
   const [isTransitioning, setIsTransitioning] = useState(false);
 
@@ -93,13 +93,13 @@ const ZoomHandler = ({ cities }) => {
       });
       
       if (nearestCity) {
-        // Pass both city and area to the city component
         setTimeout(() => {
           navigate(`/city/${nearestCity.city}`, { 
             state: { 
               cityName: nearestCity.city, 
               areaName: nearestCity.area,
-              risk: nearestCity.risk
+              risk: nearestCity.risk,
+              activeLayer // pass the selected map layer
             } 
           });
         }, 300);
@@ -114,7 +114,7 @@ const ZoomHandler = ({ cities }) => {
 };
 
 // Enhanced Blinking Marker with ripple effect and improved click handling
-const BlinkingMarker = ({ cityData, radiusKm = 5 }) => {
+const BlinkingMarker = ({ cityData, radiusKm = 5, activeLayer }) => {
   const [pulse, setPulse] = useState(false);
   const [ripple, setRipple] = useState(0);
   const baseColor = alertColors[cityData.risk] || "#999";
@@ -138,12 +138,12 @@ const BlinkingMarker = ({ cityData, radiusKm = 5 }) => {
       e.originalEvent?.stopPropagation();
       e.originalEvent?.preventDefault();
     }
-    console.log(`Navigating to city: ${cityData.city}, area: ${cityData.area}`);
     navigate(`/city/${cityData.city}`, { 
       state: { 
         cityName: cityData.city, 
         areaName: cityData.area,
-        risk: cityData.risk
+        risk: cityData.risk,
+        activeLayer // pass the selected map layer
       } 
     });
   };
@@ -377,7 +377,7 @@ const MapView = () => {
     const fetchCityData = async () => {
       setLoading(true);
       try {
-        // Enhanced static data with more cities and varied risk levels
+        // Enhanced static data with more cities and varied risk levels - Devprayag added
         const backendData = [
           { city: "Chennai", area: "Marina Beach", risk: "High" },
           { city: "Kolkata", area: "Howrah", risk: "Medium" },
@@ -387,6 +387,7 @@ const MapView = () => {
           { city: "Bangalore", area: "MG Road", risk: "Moderate" },
           { city: "Hyderabad", area: "Charminar", risk: "Medium" },
           { city: "Pune", area: "Shivaji Nagar", risk: "Low" },
+          { city: "Devprayag", area: "Sangam", risk: "High" },
         ];
 
         const citiesWithCoords = await Promise.all(
@@ -467,11 +468,12 @@ const MapView = () => {
           <BlinkingMarker 
             key={`${city.city}-${city.area}`} 
             cityData={city} 
-            radiusKm={city.risk === 'Critical' ? 8 : city.risk === 'High' ? 6 : 4} 
+            radiusKm={city.risk === 'Critical' ? 8 : city.risk === 'High' ? 6 : 4}
+            activeLayer={activeLayer} // pass activeLayer as prop
           />
         ))}
 
-        <ZoomHandler cities={cities} />
+        <ZoomHandler cities={cities} activeLayer={activeLayer} /> {/* pass activeLayer */}
         <CustomZoom />
       </MapContainer>
 
@@ -484,7 +486,7 @@ const MapView = () => {
         activeLayer={activeLayer} 
       />
 
-      {/* Status Bar */}
+      {/* Status Bar
       <div className="status-bar">
         <div className="status-item">
           <span className="status-icon">🌐</span>
@@ -498,7 +500,7 @@ const MapView = () => {
           <span className="status-icon">🎯</span>
           <span className="status-text">Click markers to explore</span>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 };

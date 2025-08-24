@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import {
   MapContainer,
   TileLayer,
@@ -451,11 +451,16 @@ const createRescueTeamIcon = (status) => {
 
 const CityPage = () => {
   const { cityName } = useParams();
+  const location = useLocation();
+  const activeLayer = location.state?.activeLayer || "standard"; // <-- get the selected layer
+
   const [cityData, setCityData] = useState(null);
   const [cityBoundary, setCityBoundary] = useState(null);
   const [disasterProneAreas, setDisasterProneAreas] = useState([]);
   const [rescueTeams, setRescueTeams] = useState([]);
   const [activeRoutes, setActiveRoutes] = useState([]); // Store active routes
+  const [routes, setRoutes] = useState([]);
+  const [selectedRouteIndex, setSelectedRouteIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -599,6 +604,18 @@ const CityPage = () => {
     );
   };
 
+  // Example: Fetch multiple routes (pseudo-code)
+  const fetchRoutes = async (from, to) => {
+    // Replace with your routing API logic
+    const response = await fetch(`/api/routes?from=${from}&to=${to}`);
+    const data = await response.json();
+    // data.routes = [{ geometry, duration, isBlocked }]
+    setRoutes(data.routes);
+    setSelectedRouteIndex(
+      data.routes.findIndex(r => !r.isBlocked && r.duration === Math.min(...data.routes.filter(rt => !rt.isBlocked).map(rt => rt.duration)))
+    );
+  };
+
   if (loading) {
     return (
       <div className="city-page">
@@ -614,6 +631,19 @@ const CityPage = () => {
       </div>
     );
   }
+
+  // Map tile URLs and attributions
+  const tileLayerUrls = {
+    standard: "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png",
+    satellite: "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+    terrain: "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"
+  };
+
+  const tileLayerAttributions = {
+    standard: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    satellite: '&copy; <a href="https://www.esri.com/">Esri</a>',
+    terrain: '&copy; <a href="https://opentopomap.org/">OpenTopoMap</a>'
+  };
 
   return (
     <div className="city-page">
@@ -719,8 +749,8 @@ const CityPage = () => {
             zoomControl={false}
           >
             <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a>'
+              url={tileLayerUrls[activeLayer]}
+              attribution={tileLayerAttributions[activeLayer]}
             />
 
             {/* City Boundary */}
@@ -728,16 +758,38 @@ const CityPage = () => {
               <Polygon
                 positions={cityBoundary}
                 pathOptions={{
-                  color: "black",
-                  fillColor: "transparent",
-                  fillOpacity: 0,
-                  weight: 3,
-                  dashArray: "10, 5"
+                  color: "#1976d2", // blue for visibility
+                  fillColor: "#1976d2",
+                  fillOpacity: 0.08,
+                  weight: 4,
+                  dashArray: "8, 6"
                 }}
               >
                 <Popup>
                   <strong>{cityName}</strong><br />
                   City Administrative Boundary
+                </Popup>
+              </Polygon>
+            )}
+            {!cityBoundary && cityData?.boundingBox && (
+              <Polygon
+                positions={[
+                  [parseFloat(cityData.boundingBox[0]), parseFloat(cityData.boundingBox[2])],
+                  [parseFloat(cityData.boundingBox[0]), parseFloat(cityData.boundingBox[3])],
+                  [parseFloat(cityData.boundingBox[1]), parseFloat(cityData.boundingBox[3])],
+                  [parseFloat(cityData.boundingBox[1]), parseFloat(cityData.boundingBox[2])]
+                ]}
+                pathOptions={{
+                  color: "#d32f2f", // red for fallback
+                  fillColor: "#d32f2f",
+                  fillOpacity: 0.05,
+                  weight: 2,
+                  dashArray: "2, 8"
+                }}
+              >
+                <Popup>
+                  <strong>{cityName}</strong><br />
+                  City Bounding Box (Fallback)
                 </Popup>
               </Polygon>
             )}
@@ -881,7 +933,18 @@ const CityPage = () => {
               </Polyline>
             ))}
 
-            {/* City Center Marker (Black) */}
+            {/* City Center Circle and Marker (Black) */}
+            <Circle
+              center={cityData.coords}
+              radius={500}
+              pathOptions={{
+                color: "#000",
+                fillColor: "#000",
+                fillOpacity: 0.15,
+                weight: 2,
+                dashArray: "4, 8"
+              }}
+            />
             <Marker position={cityData.coords} icon={createCityIcon()}>
               <Popup>
                 <div>
@@ -904,6 +967,42 @@ const CityPage = () => {
           </MapContainer>
         )}
       </div>
+
+      {/* Route selection buttons and info */}
+      {routes.length > 0 && (
+        <div className="routes-selection">
+          <h3>🚦 Route Options</h3>
+          <div className="routes-list">
+            {routes.map((route, idx) => (
+              <button
+                key={idx}
+                className={`route-btn ${idx === selectedRouteIndex ? "selected" : ""} ${route.isBlocked ? "blocked" : ""}`}
+                onClick={() => setSelectedRouteIndex(idx)}
+                disabled={route.isBlocked}
+              >
+                {route.isBlocked ? "Blocked" : `Route ${idx + 1}`}
+                {route.duration && !route.isBlocked && ` • ${Math.round(route.duration / 60)} min`}
+                {idx === selectedRouteIndex && !route.isBlocked && " (Fastest)"}
+              </button>
+            ))}
+          </div>
+
+          {/* Selected route polyline */}
+          <div className="selected-route-info">
+            <h4>Selected Route Details</h4>
+            {routes[selectedRouteIndex] && (
+              <div>
+                <p><strong>Route:</strong> {selectedRouteIndex + 1}</p>
+                <p><strong>Distance:</strong> {(routes[selectedRouteIndex].distance / 1000).toFixed(1)} km</p>
+                <p><strong>ETA:</strong> {Math.round(routes[selectedRouteIndex].duration / 60)} minutes</p>
+                <p className="route-status">
+                  Status: {routes[selectedRouteIndex].isBlocked ? "Blocked" : "Available"}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
