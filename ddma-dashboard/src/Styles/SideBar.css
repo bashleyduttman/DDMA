@@ -1,0 +1,46 @@
+/* src/styles/AlertsPanel.css */
+.alerts-panel {
+  width: 300px;
+  background: #f8f9fa;
+  padding: 15px;
+  border-left: 2px solid #ddd;
+  height: calc(100vh - 60px); /* leave space for navbar */
+  overflow-y: auto;
+}
+
+.alerts-panel h2 {
+  margin-bottom: 10px;
+  font-size: 1.2rem;
+}
+
+.alerts-panel ul {
+  list-style: none;
+  padding: 0;
+}
+
+.alerts-panel li {
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: white;
+  border: 1px solid #ccc;
+}
+
+.alerts-panel li.high {
+  border-left: 5px solid red;
+}
+
+.alerts-panel li.medium {
+  border-left: 5px solid orange;
+}
+
+.alerts-panel li.low {
+  border-left: 5px solid green;
+}
+
+.severity {
+  font-size: 0.8rem;
+  color: #666;
+  margin-left: 5px;
+}

@@ -1,0 +1,32 @@
+/* Dashboard container */
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+/* Navbar will have fixed height */
+.dashboard .navbar {
+  height: 60px; /* adjust as per your Navbar */
+  z-index: 1000;
+}
+
+/* Main content below navbar */
+.dashboard-content {
+  display: flex;
+  flex: 1; /* take remaining space */
+  overflow: hidden;
+}
+
+/* Map section takes full available space */
+.map-section {
+  flex: 1;
+  position: relative;
+}
+
+/* Sidebar */
+.alerts-section {
+  width: 260px;
+  padding: 10px;
+}
