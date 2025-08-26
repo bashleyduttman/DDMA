@@ -1,0 +1,85 @@
+/* src/components/AdminUpload.css */
+
+.admin-upload-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2rem;
+  background: #f7f9fc;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.admin-upload-title {
+  font-size: 1.75rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+.admin-upload-form {
+  background: #fff;
+  padding: 1.5rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 380px;
+  max-width: 95%;
+  transition: transform 0.2s ease;
+}
+
+.admin-upload-form:hover {
+  transform: translateY(-2px);
+}
+
+.admin-upload-input {
+  display: block;
+  width: 100%;
+  padding: 0.5rem;
+  border: 2px dashed #aaa;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.admin-upload-input:hover {
+  border-color: #2563eb;
+}
+
+.admin-preview {
+  margin-bottom: 1rem;
+}
+
+.admin-preview img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.admin-upload-btn {
+  width: 100%;
+  background: #2563eb;
+  color: white;
+  font-weight: 600;
+  padding: 0.6rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.1s ease;
+}
+
+.admin-upload-btn:hover {
+  background: #1e4ed8;
+  transform: scale(1.02);
+}
+
+/* When setting flood ratio for Devprayag */
+const cityKey = "Devprayag";
+let floodRatios = {};
+try {
+  floodRatios = JSON.parse(sessionStorage.getItem("floodRatios")) || {};
+} catch { floodRatios = {}; }
+floodRatios[cityKey] = response.data.flood_ratio;
+sessionStorage.setItem("floodRatios", JSON.stringify(floodRatios));

@@ -1,22 +1,34 @@
 // src/components/Navbar.jsx
 import React from "react";
 import { Link } from "react-router-dom";
-import "../styles/Navbar.css";
+import "../Styles/NavBar.css"
 
-const Navbar = () => {
+const Navbar = ({ cities }) => {
   return (
     <nav className="navbar">
-      <div className="navbar-logo">
-        Disaster Response Platform
+      {/* Left side - Logo */}
+      {/* <Link to="/" className="navbar-logo">
+        Dashboard
+      </Link> */}
+
+      {/* Center - Cities info */}
+      <div className="navbar-cities">
+        {cities.map((city, idx) => (
+          <span key={idx} className="navbar-city">
+            {city}
+          </span>
+        ))}
       </div>
-      <ul className="navbar-links">
-        <li>
-          <Link to="/">Dashboard</Link>
-        </li>
-        <li>
-          <Link to="/about">About</Link>
-        </li>
-      </ul>
+
+      {/* Right side - Links */}
+      <div className="navbar-links">
+        <Link to="/dashboard" className="navbar-link">
+          Dashboard
+        </Link>
+        <Link to="/admin" className="navbar-link">
+          Admin
+        </Link>
+      </div>
     </nav>
   );
 };

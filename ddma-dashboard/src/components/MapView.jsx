@@ -1,5 +1,5 @@
 // src/components/MapView.jsx
-import React, { useEffect, useState, useRef } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
   MapContainer,
   TileLayer,
@@ -15,6 +15,7 @@ import { useNavigate } from "react-router-dom";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import "../styles/MapView.css";
+import { FloodContext } from "../context/FloodContext";
 
 const alertColors = {
   High: "#FF4C4C",
@@ -325,12 +326,44 @@ const MapLoading = () => {
   );
 };
 
+// Toast Alert Component
+const FloodToast = ({ floodRatio, onClose }) => {
+  if (floodRatio < 0.1 || floodRatio > 0.49) return null;
+
+  // Map severity based on ratio
+  let severity = "Low Risk";
+  if (floodRatio >= 0.3 && floodRatio <= 0.49) {
+    severity = "Mild Risk";
+  } else if (floodRatio >= 0.1 && floodRatio < 0.3) {
+    severity = "Low Risk";
+  }
+
+  return (
+    <div className="flood-toast">
+      <span>
+        ⚠️ Flood Risk Detected! ({severity}, Flood Ratio: {(floodRatio * 100).toFixed(0)}%)
+      </span>
+      <button className="toast-close" onClick={onClose}>×</button>
+    </div>
+  );
+};
+
 const MapView = () => {
   const [cities, setCities] = useState([]);
   const [loading, setLoading] = useState(true);
   const [activeLayer, setActiveLayer] = useState('standard');
   const mapRef = useRef();
-  
+  const { floodRatio, setFloodRatio } = useContext(FloodContext);
+  const [showToast, setShowToast] = useState(true);
+
+  // On mount, restore floodRatio from sessionStorage if present
+  useEffect(() => {
+    const stored = sessionStorage.getItem("devprayagFloodRatio");
+    if (stored !== null && !isNaN(Number(stored))) {
+      setFloodRatio(Number(stored));
+    }
+  }, [setFloodRatio]);
+
   const indiaBounds = [
     [6.4627, 68.1097],
     [35.5133, 97.3956],
@@ -349,25 +382,42 @@ const MapView = () => {
   };
 
   useEffect(() => {
-    // Use static coordinates for instant loading
+    // Only Devprayag is dynamic for admin upload
     const staticCities = [
       { city: "Chennai", area: "Marina Beach", risk: "High", coords: [13.0500, 80.2824] },
       { city: "Kolkata", area: "Howrah", risk: "Medium", coords: [22.5958, 88.2636] },
       { city: "Mumbai", area: "Colaba", risk: "Critical", coords: [18.9067, 72.8147] },
       { city: "Navi Mumbai", area: "Vashi", risk: "Low", coords: [19.0707, 73.0000] },
-      { city: "Delhi", area: "Connaught Place", risk: "High", coords: [28.6315, 77.2167] },
+      // { city: "Delhi", area: "Connaught Place", risk: "High", coords: [28.6315, 77.2167] },
       { city: "Bangalore", area: "MG Road", risk: "Moderate", coords: [12.9758, 77.6055] },
       { city: "Hyderabad", area: "Charminar", risk: "Medium", coords: [17.3616, 78.4747] },
       { city: "Pune", area: "Shivaji Nagar", risk: "Low", coords: [18.5308, 73.8478] },
-      { city: "Devprayag", area: "Sangam", risk: "High", coords: [30.1461, 78.5986] },
+      // Devprayag will be conditionally added below
     ];
+    // Only add Devprayag if floodRatio > 0.5
+    if (floodRatio !== null && floodRatio > 0.5) {
+      staticCities.push({
+        city: "Devprayag",
+        area: "Sangam",
+        risk: "High",
+        coords: [30.1461, 78.5986]
+      });
+    }
     setCities(staticCities);
     setLoading(false);
-  }, []);
+  }, [floodRatio]); // re-run when floodRatio changes
+
+  useEffect(() => {
+    if (floodRatio >= 0.1 && floodRatio <= 0.49) setShowToast(true);
+    else setShowToast(false);
+  }, [floodRatio]);
 
   const handleLayerToggle = (layerType) => {
     setActiveLayer(layerType);
   };
+
+  // Always show all markers except Devprayag, which is conditional above
+  const shouldShowMarkers = true;
 
   if (loading) {
     return <MapLoading />;
@@ -375,11 +425,20 @@ const MapView = () => {
 
   return (
     <div className="map-container">
+      {/* Toast Alert */}
+      {showToast && floodRatio >= 0.1 && floodRatio <= 0.49 && (
+        <FloodToast floodRatio={floodRatio} onClose={() => setShowToast(false)} />
+      )}
+
       {/* Header */}
       <div className="map-header">
         <div className="header-content">
-          <h1 className="map-title">🚨 Emergency Response Dashboard</h1>
-          <p className="map-subtitle">Real-time monitoring of emergency situations across India</p>
+          <h1 className="map-title">
+            🚨 AAPDA - Automated Aid &amp; Proactive Disaster Assistance
+          </h1>
+          <p className="map-subtitle">
+            Real-time monitoring of emergency situations across India
+          </p>
         </div>
         <div className="header-stats">
           <div className="stat-item">
@@ -406,55 +465,26 @@ const MapView = () => {
           attribution={tileLayerAttributions[activeLayer]}
         />
 
-        {/* Optional: Disaster/Weather overlay */}
-        <WMSTileLayer
-          url="https://services.sentinel-hub.com/ogc/wms/YOUR_INSTANCE_ID"
-          layers="RADAR_FLOOD_LAYER"
-          format="image/png"
-          transparent={true}
-          opacity={0.3}
-          attribution="ESA Sentinel-1"
-          params={{ apiKey: "PLAKf058f56bdcd9447084634ea3ab09138c" }}
-        />
+        {shouldShowMarkers &&
+          cities.map((city) => (
+            <BlinkingMarker 
+              key={`${city.city}-${city.area}`} 
+              cityData={city} 
+              radiusKm={city.risk === 'Critical' ? 8 : city.risk === 'High' ? 6 : 4}
+              activeLayer={activeLayer}
+            />
+          ))
+        }
 
-        {/* City markers */}
-        {cities.map((city) => (
-          <BlinkingMarker 
-            key={`${city.city}-${city.area}`} 
-            cityData={city} 
-            radiusKm={city.risk === 'Critical' ? 8 : city.risk === 'High' ? 6 : 4}
-            activeLayer={activeLayer} // pass activeLayer as prop
-          />
-        ))}
-
-        <ZoomHandler cities={cities} activeLayer={activeLayer} /> {/* pass activeLayer */}
+        <ZoomHandler cities={cities} activeLayer={activeLayer} />
         <CustomZoom />
       </MapContainer>
 
-      {/* Map Legend */}
       <MapLegend />
-      
-      {/* Map Controls */}
       <MapControls 
         onLayerToggle={handleLayerToggle} 
         activeLayer={activeLayer} 
       />
-
-      {/* Status Bar
-      <div className="status-bar">
-        <div className="status-item">
-          <span className="status-icon">🌐</span>
-          <span className="status-text">Live Data</span>
-        </div>
-        <div className="status-item">
-          <span className="status-icon">⚡</span>
-          <span className="status-text">Auto-refresh: ON</span>
-        </div>
-        <div className="status-item">
-          <span className="status-icon">🎯</span>
-          <span className="status-text">Click markers to explore</span>
-        </div>
-      </div> */}
     </div>
   );
 };

@@ -1,29 +1,59 @@
-/* src/styles/Navbar.css */
+/* src/components/Navbar.css */
+
 .navbar {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  padding: 10px 20px;
-  background-color: #222;
-  color: white;
+  justify-content: space-between;
+  /* Use the same gradient as map-header for perfect alignment */
+background: linear-gradient(90deg, #6d28d9 0%, #7c3aed 40%, #a78bfa 100%);
+  color: #111;
+  border-bottom: 2px solid #6d28d9;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.08);
 }
 
+/* Logo */
 .navbar-logo {
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   font-weight: bold;
-}
-
-.navbar-links {
-  list-style: none;
-  display: flex;
-  gap: 20px;
-}
-
-.navbar-links a {
-  color: white;
   text-decoration: none;
+  color: rgb(7, 7, 7);
 }
 
-.navbar-links a:hover {
+/* Center Cities Section */
+.navbar-cities {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-city {
+  background-color: rgb(10, 10, 10);
+  color: #2563eb;
+  padding: 0.25rem 0.5rem;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+/* Right Links */
+.navbar-links {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.navbar-link {
+  color: rgb(3, 3, 3);
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.navbar-link:hover {
   text-decoration: underline;
+}
+
+/* Optional: Ensure text is readable */
+.navbar a,
+.navbar-cities,
+.navbar-link,
+.navbar-logo {
+  color: #111 !important;
 }

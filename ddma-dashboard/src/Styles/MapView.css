@@ -21,20 +21,24 @@ body {
 
 /* Map Header */
 .map-header {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 80px;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  /* Use the same gradient as navbar for perfect alignment */
+  background: linear-gradient(90deg, #6d28d9 0%, #7c3aed 40%, #a78bfa 100%);
+  color: #111;
+  border-bottom: 2px solid #6d28d9;
+  box-shadow: 0 2px 8px rgba(124,58,237,0.08);
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 0 24px;
   z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 80px;
+  animation: fadeInUp 0.4s ease-out;
 }
 
 .header-content {
@@ -51,6 +55,10 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: #111 !important;
+  background: none !important;
+  color: #111 !important;
+  text-shadow: none !important;
 }
 
 .map-subtitle {
@@ -108,8 +116,9 @@ body {
 /* Enhanced Custom Zoom Controls */
 .leaflet-control.custom-zoom {
   position: absolute;
-  top: 100px;
+  bottom: 40px;   /* Move to bottom */
   right: 20px;
+  top: auto !important;      /* Remove top positioning */
   z-index: 1000;
   display: flex;
   flex-direction: column;
@@ -361,12 +370,12 @@ body {
   bottom: 100px;
   left: 20px;
   z-index: 1000;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15); /* semi-transparent white */
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   min-width: 200px;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -440,12 +449,12 @@ body {
   left: 20px;
   width:200px;
   z-index: 1000;
-  background: linear-gradient(135deg, rgba(15, 23, 42, 0.95) 0%, rgba(30, 41, 59, 0.95) 100%);
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.15); /* semi-transparent white */
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255,255,255,0.25);
+  border-radius: 12px;
   padding: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 12px rgba(0,0,0,0.08);
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -614,6 +623,36 @@ body {
   font-size: 1rem;
   margin: 0;
   text-align: center;
+}
+
+/* Flood Toast Notification */
+.flood-toast {
+  position: fixed;
+  top: 90px;
+  right: 32px;
+  background: rgba(255, 255, 0, 0.95);
+  color: #222;
+  font-weight: 600;
+  padding: 16px 32px 16px 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 1rem;
+  animation: fadeInUp 0.5s;
+}
+
+.toast-close {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #222;
+  cursor: pointer;
+  margin-left: 8px;
+  font-weight: bold;
+  line-height: 1;
 }
 
 /* Responsive Design */
@@ -843,4 +882,21 @@ body {
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(239, 68, 68, 0.8);
+}
+
+/* Make all text black for map-legend and map-controls */
+.map-legend,
+.map-legend * {
+  color: #111 !important;
+}
+
+.map-controls,
+.map-controls * {
+  color: #111 !important;
+}
+
+/* Make navbar (map-header) text black */
+.map-header,
+.map-header * {
+  color: #111 !important;
 }
